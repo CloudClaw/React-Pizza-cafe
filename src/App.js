@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import '../src/scss/app.scss';
+import { Header } from './components/Header/Header';
+import { Home } from './pages/Home';
+import { ErrorPage } from './pages/ErrorPage/ErrorPage';
+import { Cart } from './pages/Cart';
+
+import { Routes, Route } from 'react-router-dom';
+
+export const SearchContext = React.createContext();
 
 function App() {
+  const [searchItem, setSearchItem] = React.useState('');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <SearchContext.Provider value={{ searchItem, setSearchItem }}>
+        <Header />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </div>
+      </SearchContext.Provider>
     </div>
   );
 }
