@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setCategoryId } from '../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice';
 
 import { PizzaItem } from '../components/PizzaItem/PizzaItem';
 import { PizzaSkeleton } from '../components/PizzaItem/PizzaSkeleton';
@@ -13,16 +13,20 @@ import { SearchContext } from '../App';
 export const Home = ({}) => {
   const categoryId = useSelector((state) => state.filterReducer.categoryId);
   const sortType = useSelector((state) => state.filterReducer.sort.sortProperty);
+  const currentPage = useSelector((state) => state.filterReducer.currentPage);
   const dispatch = useDispatch();
 
   const { searchItem } = React.useContext(SearchContext);
 
   const [pizzaItem, setPizzaItem] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
 
   const onChangeCategory = (id) => {
     dispatch(setCategoryId(id));
+  };
+
+  const onChangePage = (number) => {
+    dispatch(setCurrentPage(number));
   };
 
   //   .filter((obj) => obj.name.toLowerCase().includes(searchItem.toLowerCase())) для статичного массива
@@ -59,7 +63,7 @@ export const Home = ({}) => {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? pizzaSkeletons : pizzas}</div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination currentPage={currentPage} onChangePage={onChangePage} />
     </div>
   );
 };

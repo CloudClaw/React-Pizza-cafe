@@ -1,9 +1,30 @@
 import React from 'react';
 import { SearchContext } from '../../App';
 import styles from './Search.module.scss';
+import debounce from 'lodash.debounce';
 
 export const Search = () => {
+  const [value, setValue] = React.useState('');
   const { searchItem, setSearchItem } = React.useContext(SearchContext);
+  const inputRef = React.useRef();
+
+  const onClickClear = () => {
+    setSearchItem('');
+    setValue('');
+    inputRef.current.focus();
+  };
+
+  const updateSearchValue = React.useCallback(
+    debounce((str) => {
+      setSearchItem(str);
+    }, 150),
+    [],
+  );
+
+  const onChangeInput = (event) => {
+    setValue(event.target.value);
+    updateSearchValue(event.target.value);
+  };
 
   return (
     <div className={styles.root}>
@@ -23,7 +44,7 @@ export const Search = () => {
           stroke="#000000"
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeMitterlimit="10"
+          strokemitterlimit="10"
           strokeWidth="2"
           x1="27"
           x2="20.366"
@@ -34,7 +55,7 @@ export const Search = () => {
           stroke="#000000"
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeMitterlimit="10"
+          strokemitterlimit="10"
           strokeWidth="2"
           x1="27"
           x2="20.366"
@@ -43,21 +64,22 @@ export const Search = () => {
         />
       </svg>
       <input
-        value={searchItem}
-        onChange={(event) => setSearchItem(event.target.value)}
+        ref={inputRef}
+        value={value}
+        onChange={onChangeInput}
         className={styles.input}
         placeholder="Поиск пиццы..."
       />
-      {searchItem && (
+      {value && (
         <svg
-          onClick={() => setSearchItem('')}
+          onClick={onClickClear}
           className={styles.clearIcon}
           height="14px"
           version="1.1"
           viewBox="0 0 14 14"
           width="14px"
           xmlns="http://www.w3.org/2000/svg">
-          <g fill="none" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1">
+          <g fill="none" fill-rule="evenodd" id="Page-1" stroke="none" strokeWidth="1">
             <g fill="#000000" id="Core" transform="translate(-341.000000, -89.000000)">
               <g id="close" transform="translate(341.000000, 89.000000)">
                 <path
